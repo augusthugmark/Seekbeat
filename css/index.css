@@ -1,9 +1,8 @@
 :root {
   --sublimeStart: #FC466B;
   --sublimeEnd: #3F5EFB;
-  --menuBg: #e0f0ff;
   --footerText: #b2cdc9;
-  --buttonText: #ffffff;
+  --pText: #ffffff;
   --buttonUnderline: #3fe8fb;
   --buttonHover: rgb(34, 228, 13);
 }
@@ -136,7 +135,7 @@ body {
   position: relative;
   padding: 0 0.3em;
   z-index: 1;
-  color: var(--buttonText);
+  color: var(--pText);
   text-decoration: none;
   transition: color 0.3s ease;
 }
@@ -203,4 +202,3 @@ body {
 }}
 
 /* Music page */
-
