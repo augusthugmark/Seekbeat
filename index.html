@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="./bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="./css/index.css" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="imgs/seekbeat_favicon_light_rounded.ico">
+
+    <title>Seekbeat</title>
+  </head>
+  <body>
+    <div class="GridPage">
+		<div class="GridItemHeader">
+			<div class="MenuWrap">
+			<a href="index.html" class="ListItem">Home</a>
+			<a href="music.html" class="ListItem">Music</a>
+		   </div>
+		</div>
+		<div class="GridItemMain homeMain">
+            <img src="imgs/seekbeat_favicon_medium.png" alt="Seekbeat Logo" class="seekbeat-logo">
+			<h1 class="fade-up">Welcome to Seekbeat - Find your favorite music</h1>
+			<p class="fade-up">Seekbeat is a simple and intuitive app that helps you find music quickly and effortlessly. 
+                <br> Built by August Hugmark using HTML, CSS, JavaScript and a public music Web API, it's designed to be fast, clean, and easy to use. 
+                <br><br> So you can focus on finding the music you love.</p>
+		</div>
+		<div class="GridItemSideBarLeft">
+			<div class="MenuWrap">
+			<a href="index.html" class="ListItem">Home</a>
+			<a href="music.html" class="ListItem">Music</a>
+			</div>
+      </div>
+		<div class="GridItemFooter">
+            <div class="footer-content">@ August Hugmark 2025</div>
+        </div>
+
+      <!-- Bootstrap Javascript -->
+      <script src="../bootstrap/js/bootstrap.bundle.js"></script>
+      
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const elements = document.querySelectorAll('.fade-up');
+            elements.forEach((el, index) => {
+            setTimeout(() => {
+                el.classList.add('show');
+            }, index * 100); // 200ms mellan varje element
+            });
+        });
+    </script>
+
+  </body>
+</html>

@@ -1,0 +1,206 @@
+:root {
+  --sublimeStart: #FC466B;
+  --sublimeEnd: #3F5EFB;
+  --menuBg: #e0f0ff;
+  --footerText: #b2cdc9;
+  --buttonText: #ffffff;
+  --buttonUnderline: #3fe8fb;
+  --buttonHover: rgb(34, 228, 13);
+}
+
+body {
+  margin: 0;
+  font-family: 'Oswald', sans-serif;
+  background: linear-gradient(-45deg, var(--sublimeStart), var(--sublimeEnd), var(--sublimeStart));
+  background-size: 600% 600%;
+  animation: gradientMove 15s ease infinite;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.fade-up {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: all 0.4s ease-out;
+}
+
+.fade-up.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.GridItemHeader,
+.GridItemSideBarLeft,
+.GridItemMain,
+.GridItemFooter {
+  background: transparent;
+}
+
+.GridPage {
+  display: grid;
+  grid-template-columns: 1fr 7fr;
+  grid-template-rows: 50px 1fr 50px;
+  grid-template-areas:
+    'header header'
+    'side1 main'
+    'footer footer';
+  height: 100vh;
+}
+
+.GridItemHeader {
+  grid-area: header;
+}
+
+.GridItemSideBarLeft {
+  grid-area: side1;
+}
+
+.GridItemMain {
+  grid-area: main;
+  background-size: 600% 600%;
+  animation: gradientMove 15s ease infinite;
+  color: white;
+}
+
+[class^='GridItem'] {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.seekbeat-logo {
+  width: 128px;
+  height: 128px;
+  margin: 1rem auto;
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.homeMain {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+  height: 100%;
+}
+
+.homeMain h1 {
+  font-size: 2.5rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.homeMain p {
+  font-size: 1rem;
+  max-width: 800px;
+  line-height: 1.6;
+  color: white;
+}
+
+.GridItemMain h1::after {
+  content: '';
+  display: block;
+  width: 50%;
+  margin: 1rem auto;
+  border-bottom: 2px solid #ffffff;
+}
+
+.GridItemFooter {
+  grid-area: footer;
+  padding: 0.5rem 1rem;
+}
+
+.footer-content {
+  font-size: 0.8rem;
+  color: var(--footerText);
+  text-align: center;
+  margin-left: 11.7vw;
+}
+
+.MenuWrap {
+  color: #1a1a1a;
+  font-size: 1rem;
+  display: flex;
+}
+
+.ListItem {
+  font-size: 1.1rem;    
+  font-weight: 600;      
+  position: relative;
+  padding: 0 0.3em;
+  z-index: 1;
+  color: var(--buttonText);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.ListItem::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0.1em;
+  height: 0.4em;
+  width: 0;
+  background-color: var(--buttonUnderline);
+  z-index: -1;
+  transition: width 0.4s ease, left 0.4s ease;
+  border-radius: 2px;
+}
+
+.ListItem:hover {
+  color: var(--buttonHover);
+}
+
+.ListItem:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+.GridItemSideBarLeft .MenuWrap {
+  flex-direction: column;
+  width: 10vw;
+  height: 100%;
+}
+
+.GridItemSideBarLeft .ListItem {
+  margin-bottom: 1rem;
+}
+
+.GridItemHeader .MenuWrap {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2rem;
+  padding-left: 5rem;
+  padding-top: 2rem;
+  height: 2.75rem;
+  width: 100vw;
+}
+
+.GridItemSideBarLeft .MenuWrap {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .GridItemHeader .MenuWrap {
+    display: none;
+  }
+
+  .GridItemSideBarLeft .MenuWrap {
+    display: flex;
+  }
+
+  .GridItemHeader .ListItem,
+  .GridItemSideBarLeft .ListItem {      
+    margin-bottom: 2rem; 
+}}
+
+/* Music page */
+
