@@ -8,6 +8,7 @@
     <!-- Bootstrap CSS -->
     <link href="./bootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="./css/index.css" rel="stylesheet">
+    <link href="./css/music.css" rel="stylesheet">
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="assets/seekbeat_favicon_light_rounded.ico">
@@ -29,16 +30,12 @@
                 <button class="btn btn-outline-light" type="submit">Search</button>
             </form>
             </div>
-            <p>test1</p>
-            <p>test2</p>
-            <p>test3</p>
-            <p>test4</p>
-            <p>test5</p>
-            <p>test6</p>
-            <p>test7</p>
-            <p>test8</p>
-            <p>test9</p>
-            <p>test10</p>
+            <div id="musicResultsArea"></div>
+            <div id="pagination" class="d-flex justify-content-center my-4">
+              <button id="prevBtn" class="btn btn-secondary mx-2">Previous</button>
+              <button id="nextBtn" class="btn btn-secondary mx-2">Next</button>
+            </div>
+              <div id="pageInfo" class="text-center text-light mt-2"></div>
             </div>
 		<div class="GridItemSideBarLeft">
 			<div class="MenuWrap">
@@ -54,6 +51,8 @@
 
       <!-- Bootstrap Javascript -->
       <script src="./bootstrap/js/bootstrap.bundle.js"></script>
-      <script src="./script/music.js"></script>
+
+      <script type="module" src="./script/music.js"></script>
+
   </body>
 </html>
