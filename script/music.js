@@ -1,115 +1,177 @@
 'use strict';
 
-import musicService from './music-group-service.js';
+import musicService from './music-group-f-service.js';
 
-const service = new musicService("https://seido-webservice-307d89e1f16a.azurewebsites.net/api");
+const service = new musicService('https://seido-webservice-307d89e1f16a.azurewebsites.net/api');
 
 let allResults = [];
 let currentPage = 1;
 const resultsPerPage = 10;
+let totalPages = 0;
+let currentQuery = null;
 
-const mainContainer = document.querySelector('#musicResultsArea');
+const resultsContainer = document.querySelector('#musicResultsArea');
+const searchForm = document.getElementById('searchForm');
+const searchInput = document.getElementById('searchInput');
+const searchResultInfo = document.getElementById('searchResultInfo');
 
-// Skapa container för resultat
-const resultsContainer = document.createElement('div');
-resultsContainer.id = 'results';
-resultsContainer.className = 'container mt-4';
-mainContainer.appendChild(resultsContainer);
+loadApiInfo();
+fetchMusicGroups(currentPage);
+
+// Hämta API-info för räknare
+async function loadApiInfo() {
+  try {
+    const info = await service.readInfoAsync();
+
+    document.getElementById('count-groups').innerText =
+      `Music groups: ${info.db.nrSeededMusicGroups + info.db.nrUnseededMusicGroups}`;
+
+    document.getElementById('count-albums').innerText =
+      `Albums: ${info.db.nrSeededAlbums + info.db.nrUnseededAlbums}`;
+
+    document.getElementById('count-artists').innerText =
+      `Artists: ${info.db.nrSeededArtists + info.db.nrUnseededArtists}`;
+  } catch (err) {
+    console.error("Kunde inte hämta WebAPI-info:", err);
+  }
+}
+
+// Hämta grupper per sida
+async function fetchMusicGroups(page) {
+  try {
+    const result = await service.readMusicGroupsAsync(
+      page - 1,
+      true,
+      currentQuery,
+      resultsPerPage
+    );
+
+    allResults = result.pageItems;
+    totalPages = result.pageCount;
+    currentPage = page;
+
+    renderResults();
+    updatePageInfo();
+
+    if (currentQuery) {
+    searchResultInfo.innerText = `${result.dbItemsCount} results found for "${currentQuery}"`;
+    } else {
+      searchResultInfo.innerText = '';
+    }
+  } catch (err) {
+    console.error('Kunde inte hämta data:', err);
+    alert(`Failed to received data from server: ${err.message}`);
+  }
+}
+
+// Rendera listan
+function renderResults() {
+  resultsContainer.innerHTML = allResults.map(item => `
+    <div class="list-group-item bg-transparent text-light border-0 d-flex justify-content-between align-items-center">
+      <span class="fs-5">${item.name}</span>
+      <button class="btn btn-outline-light btn-sm" onclick="showDetails('${item.musicGroupId}')">Details</button>
+    </div>
+  `).join('');
+}
+
+// Visa detaljerad info i modal
+window.showDetails = async function (id) {
+  const group = await service.readMusicGroupAsync(id, true);
+
+  const modalTitle = document.getElementById('musicModalLabel');
+  const modalBody = document.getElementById('musicModalBody');
+  modalTitle.innerText = group.name;
+
+  // ARTISTER
+  let artistsHtml = '<li>Inga artister</li>';
+  if (group.artists?.length) {
+    const artistDetails = await Promise.all(
+      group.artists.map(a => service.readArtistAsync(a.artistId, true))
+    );
+    artistsHtml = artistDetails.map(a => {
+      const groups = a.musicGroups?.map(g => g.name).join(', ') || 'Inga grupper';
+      return `<li>${a.firstName} ${a.lastName} – <em>${groups}</em></li>`;
+    }).join('');
+  }
+
+  // ALBUM
+  let albumHtml = '<li>Inga album</li>';
+  if (group.albums?.length) {
+    const albumDetails = await Promise.all(
+      group.albums.map(a => service.readAlbumAsync(a.albumId, true))
+    );
+    albumHtml = albumDetails.map(a => {
+      const artistNames = a.artists?.map(art => `${art.firstName} ${art.lastName}`).join(', ') || 'Inga artister';
+      return `<li>
+        <strong>${a.name}</strong> (${a.releaseYear || '?'})<br/>
+        <em>Artists:</em> ${artistNames}<br/>
+        <em>Group:</em> ${a.musicGroup?.name || 'Okänd grupp'}
+      </li>`;
+    }).join('');
+    }
+
+  modalBody.innerHTML = `
+    <p><strong>Genre:</strong> ${group.strGenre || 'okänd'}</p>
+    <p><strong>Grundat:</strong> ${group.establishedYear || 'okänt'}</p>
+    <p><strong>Artister:</strong></p>
+    <ul>${artistsHtml}</ul>
+    <p><strong>Album:</strong></p>
+    <ul>${albumHtml}</ul>
+  `;
+
+  const modal = new bootstrap.Modal(document.getElementById('musicModal'));
+  modal.show();
+};
+
+// Uppdatera sidinfo
+function updatePageInfo() {
+  const pageInfo = document.getElementById('pageInfo');
+  if (pageInfo) {
+    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+  }
+}
+
+// SIDKNAPPAR
+document.getElementById('firstBtn')?.addEventListener('click', () => {
+  if (currentPage !== 1) {
+    currentPage = 1;
+    fetchMusicGroups(currentPage);
+  }
+});
+
+document.getElementById('lastBtn')?.addEventListener('click', () => {
+  if (currentPage !== totalPages) {
+    currentPage = totalPages;
+    fetchMusicGroups(currentPage);
+  }
+});
 
 document.getElementById('prevBtn')?.addEventListener('click', () => {
   if (currentPage > 1) {
     currentPage--;
-    renderResults();
+    fetchMusicGroups(currentPage);
   }
 });
 
 document.getElementById('nextBtn')?.addEventListener('click', () => {
-  if (currentPage * resultsPerPage < allResults.length) {
+  if (currentPage < totalPages) {
     currentPage++;
-    renderResults();
+    fetchMusicGroups(currentPage);
   }
 });
 
-// Form search hantering
-const searchForm = document.querySelector("form");
-searchForm.addEventListener("submit", function (e) {
+// Sökfunktion
+searchForm?.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const query = document.getElementById("searchInput").value.trim();
-  console.log("Search for:", query);
-  // Här kan du lägga till filtrering eller sökfunktionalitet senare
-});
+  const query = searchInput.value.trim();
 
-async function fetchMusicData() {
-  try {
-    // 1. Hämta första sidan och visa direkt
-    const firstPage = await service.readMusicGroupsAsync(1, true, null, 1000);
-    allResults = [...firstPage.pageItems];
-    renderResults();
-    updatePageInfo();
-
-    // 2. Ladda resterande sidor i bakgrunden
-    const totalPages = firstPage.pageCount;
-    for (let page = 2; page <= totalPages; page++) {
-      const result = await service.readMusicGroupsAsync(page, true, null, 1000);
-      allResults.push(...result.pageItems);
-      console.log(`Fetched page ${page} of ${totalPages}`);
-    }
-
-    // 3. Sortera när allt är klart
-    allResults.sort((a, b) => a.name.localeCompare(b.name));
-    renderResults(); // uppdatera med sorterad data
-    updatePageInfo();
-
-  } catch (error) {
-    console.error("Error:", error);
-  }
-}
-
-function renderResults() {
-  const start = (currentPage - 1) * resultsPerPage;
-  const end = start + resultsPerPage;
-  const currentResults = allResults.slice(start, end);
-
-  console.log("Current page items:", currentResults);
-
-  resultsContainer.innerHTML = currentResults.map(item => `
-  <div class="card p-3 mb-3 shadow" style="background-color: white; color: black;">
-    <h5 class="mb-1" style="color: black;">${item.name}</h5>
-    <p class="mb-0" style="color: black;">Established: ${item.establishedYear || 'Unknown established year'}</p>
-  </div>
-`).join('');
-
-  // Visa sidnummer
-  const pageInfo = document.getElementById("pageInfo");
-  if (pageInfo) {
-    pageInfo.textContent = `Page ${currentPage} of ${Math.ceil(allResults.length / resultsPerPage)}`;
-  }
-}
-
-function renderFilteredResults(filteredList) {
-  const start = (currentPage - 1) * resultsPerPage;
-  const end = start + resultsPerPage;
-  const currentResults = filteredList.slice(start, end);
-
-  resultsContainer.innerHTML = currentResults.map(item => `
-    <div class="card p-3 mb-3 shadow">
-      <h5 class="mb-1">${item.name}</h5>
-      <p class="mb-0">${item.establishedYear ? `Established: ${item.establishedYear}` : 'Established: Unknown'}</p>
-    </div>
-  `).join('');
-
-  document.getElementById('pageIndicator').textContent =
-    `Sida ${currentPage} av ${Math.ceil(filteredList.length / resultsPerPage)}`;
-}
-
-fetchMusicData();
-
-document.querySelector('form').addEventListener('submit', e => {
-  e.preventDefault();
-  const searchTerm = document.querySelector('input[type="search"]').value.toLowerCase();
-  const filtered = allResults.filter(item =>
-    item.name.toLowerCase().includes(searchTerm)
-  );
+  currentQuery = query || null;
   currentPage = 1;
-  renderFilteredResults(filtered);
+
+  try {
+    await fetchMusicGroups(currentPage);
+  } catch (err) {
+    console.error('Sökningen misslyckades:', err);
+    alert('Kunde inte hämta sökresultat.');
+  }
 });

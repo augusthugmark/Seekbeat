@@ -1,13 +1,7 @@
-.card {
-  background-color: #ffffff;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 15px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease;
-  text-align: center;
+#musicModalBody ul {
+  padding-left: 1rem;
 }
 
-.card:hover {
-  transform: scale(1.02);
+#musicModalBody p {
+  margin-bottom: 0.4rem;
 }

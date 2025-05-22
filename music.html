@@ -9,6 +9,7 @@
     <link href="./bootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="./css/index.css" rel="stylesheet">
     <link href="./css/music.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="assets/seekbeat_favicon_light_rounded.ico">
@@ -25,16 +26,35 @@
 		</div>
 		<div class="GridItemMain homeMain">
             <div class="container mt-2 d-flex justify-content-center">
-            <form class="d-flex" role="search">
-                <input class="form-control me-2" type="search" placeholder="Search music..." aria-label="Search">
-                <button class="btn btn-outline-light" type="submit">Search</button>
+            <form id="searchForm" class="d-flex" role="search">
+              <input id="searchInput" class="form-control me-2" type="search" placeholder="Search music..." aria-label="Search">
+              <button class="btn btn-outline-light" type="submit">Search</button>
             </form>
+            </div>
+            <div class="container text-light text-center mt-5">
+              <div class="row justify-content-center mt-4">
+                <div class="col-6 col-md-3 mb-3">
+                  <i class="fa-solid fa-radio fa-2xl"></i>
+                  <p class="mt-2">Music groups<br><strong id="count-groups">...</strong></p>
+                </div>
+                <div class="col-6 col-md-3 mb-3">
+                  <i class="fa-solid fa-compact-disc fa-2xl"></i>
+                  <p class="mt-2">Albums<br><strong id="count-albums">...</strong></p>
+                </div>
+                <div class="col-6 col-md-3 mb-3">
+                  <i class="fa-solid fa-music fa-2xl"></i>
+                  <p class="mt-2">Artists<br><strong id="count-artists">...</strong></p>
+                </div>
+              </div>
             </div>
             <div id="musicResultsArea"></div>
             <div id="pagination" class="d-flex justify-content-center my-4">
+              <button id="firstBtn" class="btn btn-secondary mx-2">First</button>
               <button id="prevBtn" class="btn btn-secondary mx-2">Previous</button>
               <button id="nextBtn" class="btn btn-secondary mx-2">Next</button>
+              <button id="lastBtn" class="btn btn-secondary mx-2">Last</button>
             </div>
+              <div id="searchResultInfo" class="text-center text-light mb-2"></div>
               <div id="pageInfo" class="text-center text-light mt-2"></div>
             </div>
 		<div class="GridItemSideBarLeft">
@@ -49,10 +69,22 @@
         </div>
         </div>
 
-      <!-- Bootstrap Javascript -->
+    <!-- Modal -->
+      <div class="modal fade" id="musicModal" tabindex="-1" aria-labelledby="musicModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="musicModalLabel">Gruppdetaljer</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Stäng"></button>
+            </div>
+            <div class="modal-body" id="musicModalBody">
+              <!-- Innehåll fylls dynamiskt -->
+            </div>
+          </div>
+        </div>
+      </div>
+
       <script src="./bootstrap/js/bootstrap.bundle.js"></script>
-
       <script type="module" src="./script/music.js"></script>
-
   </body>
 </html>
