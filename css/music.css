@@ -28,7 +28,7 @@
   margin-left: auto;
   margin-right: auto;
   transition: background-color 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.1); /* tunn kant */
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .music-group-card:hover {
@@ -63,4 +63,13 @@
 #searchForm {
   gap: 0.5rem;
   margin-bottom: 2rem;
+}
+
+.custom-modal-content {
+  background-color: #6c7482; /* Snygg mörkblå nyans */
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
 }
