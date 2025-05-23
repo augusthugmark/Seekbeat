@@ -97,24 +97,13 @@ window.showDetails = async function (id) {
 
   // ALBUMS
   let albumHtml = '<li>No Albums</li>';
-  try {
-    const albumResult = await service.readAlbumsAsync(0, true, null, 1000); // stor batch
-
-    const matchingAlbums = albumResult.pageItems.filter(a =>
-      a.musicGroup?.musicGroupId === group.musicGroupId
-    );
-
-    if (matchingAlbums.length) {
-      albumHtml = matchingAlbums.map(a => `
-        <li><strong>${a.name}</strong> (${a.releaseYear || '?'})</li>
-      `).join('');
-    } else {
-      albumHtml = '<li>No matching albums (likely due to missing link to music group in the data)</li>';
-    }
-  } catch (err) {
-    console.error("Error while trying to get albums:", err);
+  if (group.albums?.length) {
+    albumHtml = group.albums.map(a => `
+      <li><strong>${a.name}</strong> (${a.releaseYear || '?'})</li>
+    `).join('');
   }
 
+  // Modalinnehåll
   modalBody.innerHTML = `
     <p><strong>Genre:</strong> ${group.strGenre || 'okänd'}</p>
     <p><strong>Established:</strong> ${group.establishedYear || 'okänt'}</p>
